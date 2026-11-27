@@ -286,7 +286,7 @@
     <div><b>40+</b>projects delivered</div>
     <div><b>Resolve · Nuke · Blender</b>daily tools</div>
   </div>
-  <div class="timecode mono"><span>Session running</span><span id="tc">00:00:00:00</span></div>
+  <div class="timecode mono"><span>Kigali, Rwanda · CAT (UTC+2)</span><span id="tc">00:00:00:00</span></div>
 </section>
 
 <!-- SHOWREEL -->
@@ -354,27 +354,21 @@
 </footer>
 
 <script>
-  // Session timecode ticker
+  // Kigali (Rwanda) time — CAT, UTC+2, no daylight saving
   (function(){
     const el = document.getElementById('tc');
-    let frame = 0;
     const fps = 24;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     function pad(n){return n.toString().padStart(2,'0');}
-    function tick(){
-      frame++;
-      const totalSeconds = Math.floor(frame / fps);
-      const h = Math.floor(totalSeconds/3600);
-      const m = Math.floor((totalSeconds%3600)/60);
-      const s = totalSeconds%60;
-      const f = frame % fps;
-      el.textContent = pad(h)+":"+pad(m)+":"+pad(s)+":"+pad(f);
-      requestAnimationFrame(tick);
+    function render(){
+      const now = Date.now();
+      const d = new Date(now + 2*3600*1000);
+      const f = Math.floor(d.getUTCMilliseconds() / (1000/fps));
+      el.textContent = pad(d.getUTCHours())+":"+pad(d.getUTCMinutes())+":"+pad(d.getUTCSeconds())+(reduce ? "" : ":"+pad(f));
     }
-    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-      requestAnimationFrame(tick);
-    } else {
-      el.textContent = "00:00:00:00";
-    }
+    function tick(){ render(); requestAnimationFrame(tick); }
+    render();
+    if(reduce){ setInterval(render, 1000); } else { requestAnimationFrame(tick); }
   })();
 
   // Scroll reveal
